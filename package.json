@@ -1,0 +1,29 @@
+{
+  "name": "voters",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:eric7578/voters.git",
+  "author": "ericyan <eric7578@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "ava",
+    "start": "NODE_ENV=development node server.js"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "nodemon": "^1.11.0",
+    "webpack": "^3.5.5",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-merge": "^4.1.0"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "global": "^4.3.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  }
+}
