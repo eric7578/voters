@@ -5,7 +5,10 @@ const entryPath = path.resolve(__dirname, 'web/src/main.jsx')
 const jsDir = path.resolve(__dirname, './static/js')
 
 module.exports = {
-  entry: entryPath,
+  entry: [
+    'babel-polyfill',
+    entryPath
+  ],
   output: {
     path: jsDir,
     filename: 'bundle.js',
