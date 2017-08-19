@@ -6,8 +6,8 @@
   "author": "ericyan <eric7578@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "pretest": "eslint .",
     "test": "ava",
-    "eslint": "eslint .",
     "start": "NODE_ENV=development node server.js"
   },
   "ava": {
