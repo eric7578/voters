@@ -1,6 +1,7 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 import window from 'global/window'
 import sagaMiddleware, { rootSaga } from '../saga'
+import ranges from './ranges'
 
 let middleware = applyMiddleware(sagaMiddleware)
 
@@ -12,7 +13,9 @@ if (process.env.NODE_ENV === 'development') {
   }
 }
 
-const reducers = (state = {}, action) => state
+const reducers = combineReducers({
+  ranges
+})
 
 const store = createStore(reducers, middleware)
 

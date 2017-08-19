@@ -7,6 +7,8 @@ import * as Post from './Post'
 import { More, Previous } from './Button'
 import SubmitForm from './SubmitForm'
 import getPaginationStatus from '../selectors/getPaginationStatus'
+import * as postActions from '../actions/post'
+import * as voteActions from '../actions/vote'
 import * as postFeedActions from '../actions/postFeed'
 
 const Wrapper = styled.div`
@@ -24,16 +26,31 @@ export class Page extends Component {
   }
 
   render () {
-    const { posts, onRequestMore, onRequestPrevious, isBegin, isEnd } = this.props
+    const {
+      posts,
+      onRequestMore,
+      onRequestPrevious,
+      onCreateTitle,
+      onUpvote,
+      onDownvote,
+      isBegin,
+      isEnd
+    } = this.props
     // ignore List/Item/More if no posts is provided
     const containPosts = posts && posts.length > 0
 
     return (
       <Wrapper>
+        <SubmitForm onSubmit={onCreateTitle} />
         {containPosts &&
           <Post.List>
             {posts.map(post =>
-              <Post.Item key={post.id} data={post} />
+              <Post.Item
+                key={post.id}
+                data={post}
+                onUpvote={onUpvote}
+                onDownvote={onDownvote}
+              />
             )}
           </Post.List>
         }
@@ -59,6 +76,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    onCreateTitle: postActions.create,
+    onUpvote: voteActions.upvote,
+    onDownvote: voteActions.downvote,
     onRequestMore: postFeedActions.next,
     onRequestPrevious: postFeedActions.prev
   }, dispatch)
