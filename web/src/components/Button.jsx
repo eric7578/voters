@@ -19,3 +19,8 @@ export const Downvote = styled(Button)`
   border-color: #f44941;
   color: #f44941;
 `
+
+export const More = styled(Button)`
+  border-color: #333;
+  color: #333;
+`
