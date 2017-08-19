@@ -1,4 +1,5 @@
 import { call } from 'redux-saga/effects'
+import axios from 'axios'
 
 export default function * createPost (action) {
   const { resolve, reject, title } = action.payload
@@ -11,5 +12,7 @@ export default function * createPost (action) {
 }
 
 export function callPostApi (title) {
-  return Promise.resolve()
+  return axios.post('/api/posts', {
+    title
+  })
 }
