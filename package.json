@@ -12,6 +12,7 @@
   },
   "ava": {
     "require": [
+      "babel-polyfill",
       "babel-register",
       "jsdom-global/register"
     ],
