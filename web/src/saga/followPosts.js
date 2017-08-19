@@ -1,5 +1,6 @@
-import { select, actionChannel, take, eventChannel, call, fork, END, put } from 'redux-saga/effects'
-import { WebSocket } from 'global'
+import { eventChannel } from 'redux-saga'
+import { select, actionChannel, take, call, fork, END, put } from 'redux-saga/effects'
+import { WebSocket, window } from 'global'
 import * as postFeedActions from '../actions/postFeed'
 import getPaginationRange from '../selectors/getPaginationRange'
 
@@ -31,7 +32,7 @@ export function * watchingIncomingMessage (wsChannel) {
 
 // Since this function has webscoket constructor inside, this part is hard to test
 export function * openWebSocketChannel () {
-  const ws = new WebSocket()
+  const ws = new WebSocket(getWebSocketServerUrl(window.location))
 
   // take this message when socket is open
   const OPEN = 'ws/Open'
@@ -86,4 +87,13 @@ export function * openWebSocketChannel () {
       }
     }
   }
+}
+
+export function getWebSocketServerUrl (location) {
+  const { protocol, host } = location
+  const wsProtocol = protocol === 'https:'
+    ? 'wss:'
+    : 'ws:'
+
+  return `${wsProtocol}//${host}`
 }
