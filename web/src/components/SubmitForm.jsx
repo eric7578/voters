@@ -24,7 +24,7 @@ const updateContent = value => prevState => ({
 export default class SubmitForm extends PureComponent {
   static propTypes = {
     maxContentLength: PropTypes.number.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func
   }
 
   static defaultProps = {
@@ -59,14 +59,14 @@ export default class SubmitForm extends PureComponent {
     e.preventDefault()
 
     // check if content length is over max or empty
-    const { maxContentLength } = this.props
+    const { maxContentLength, onSubmit } = this.props
     const { content } = this.state
     const isWithinRange = (
       content.length > 0 &&
       content.length <= maxContentLength
     )
-    if (isWithinRange) {
-      this.props.onSubmit()
+    if (isWithinRange && onSubmit) {
+      onSubmit(content)
     }
   }
 }

@@ -39,4 +39,5 @@ test('it should call onSubmit when text content is within maxContentLength', t =
   form.find('form').simulate('submit', mockSubmitEvent)
 
   t.true(onSubmit.called)
+  t.true(onSubmit.calledWithExactly(content))
 })
