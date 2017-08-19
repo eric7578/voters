@@ -21,7 +21,7 @@ test('it should not call onSubmit when text content is over maxContentLength', t
   const maxContentLength = 5
   const content = 'abcdef'
   const onSubmit = spy()
-  const form = shallow(<SubmitForm onSubmit={onSubmit} maxContentLength={maxContentLength} />)
+  const form = shallow(<SubmitForm maxContentLength={maxContentLength} onSubmit={onSubmit} />)
 
   form.setState({ content })
   form.find('form').simulate('submit', mockSubmitEvent)
@@ -33,11 +33,10 @@ test('it should call onSubmit when text content is within maxContentLength', t =
   const maxContentLength = 5
   const content = 'abcde'
   const onSubmit = spy()
-  const form = shallow(<SubmitForm onSubmit={onSubmit} maxContentLength={maxContentLength} />)
+  const form = shallow(<SubmitForm maxContentLength={maxContentLength} onSubmit={onSubmit} />)
 
   form.setState({ content })
   form.find('form').simulate('submit', mockSubmitEvent)
 
   t.true(onSubmit.called)
 })
-
