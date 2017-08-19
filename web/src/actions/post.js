@@ -1,10 +1,12 @@
 export const CREATE = 'post/CREATE'
 
-export function create (title) {
+export function create (title, resolve, reject) {
   return {
     type: CREATE,
     payload: {
-      title
+      title,
+      resolve,
+      reject
     }
   }
 }

@@ -30,7 +30,6 @@ export class Page extends Component {
       posts,
       onRequestMore,
       onRequestPrevious,
-      onCreateTitle,
       onUpvote,
       onDownvote,
       isBegin,
@@ -41,7 +40,7 @@ export class Page extends Component {
 
     return (
       <Wrapper>
-        <SubmitForm onSubmit={onCreateTitle} />
+        <SubmitForm onSubmit={this.onSubmit} />
         {containPosts &&
           <Post.List>
             {posts.map(post =>
@@ -63,6 +62,13 @@ export class Page extends Component {
   componentDidMount () {
     this.props.onRequestMore()
   }
+
+  // create a new post
+  onSubmit = title => {
+    this.props.onCreateTitle(title)
+      .then(() => alert('Done!'))
+      .catch(err => alert(`Oooops!`))
+  }
 }
 
 function mapStateToProps (state) {
@@ -75,13 +81,20 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    onCreateTitle: postActions.create,
-    onUpvote: voteActions.upvote,
-    onDownvote: voteActions.downvote,
-    onRequestMore: postFeedActions.next,
-    onRequestPrevious: postFeedActions.prev
-  }, dispatch)
+  return {
+    ...bindActionCreators({
+      onCreateTitle: postActions.create,
+      onUpvote: voteActions.upvote,
+      onDownvote: voteActions.downvote,
+      onRequestMore: postFeedActions.next,
+      onRequestPrevious: postFeedActions.prev
+    }, dispatch),
+    onCreateTitle (title) {
+      return new Promise((resolve, reject) => {
+        dispatch(postActions.create(title, resolve, reject))
+      })
+    }
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Page)
