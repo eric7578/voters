@@ -4,20 +4,14 @@ export const NEXT = 'postFeed/NEXT'
 // prev page of posts feed
 export const PREV = 'postFeed/PREV'
 
-export function next (pagination) {
+export function next () {
   return {
-    type: NEXT,
-    payload: {
-      pagination
-    }
+    type: NEXT
   }
 }
 
-export function prev (pagination) {
+export function prev () {
   return {
-    type: PREV,
-    payload: {
-      pagination
-    }
+    type: PREV
   }
 }

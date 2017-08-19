@@ -2,9 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import * as Post from './Post'
-import { More } from './Button'
+import { More, Previous } from './Button'
 import SubmitForm from './SubmitForm'
+import getPaginationStatus from '../selectors/getPaginationStatus'
+import * as postFeedActions from '../actions/postFeed'
 
 const Wrapper = styled.div`
   margin: auto;
@@ -13,12 +16,15 @@ const Wrapper = styled.div`
 
 export class Page extends Component {
   static propTypes = {
+    isBegin: PropTypes.bool,
+    isEnd: PropTypes.bool,
     posts: PropTypes.array,
-    onRequestMore: PropTypes.func
+    onRequestMore: PropTypes.func,
+    onRequestPrevious: PropTypes.func
   }
 
   render () {
-    const { posts, onRequestMore } = this.props
+    const { posts, onRequestMore, onRequestPrevious, isBegin, isEnd } = this.props
     // ignore List/Item/More if no posts is provided
     const containPosts = posts && posts.length > 0
 
@@ -31,7 +37,8 @@ export class Page extends Component {
             )}
           </Post.List>
         }
-        {containPosts && <More onClick={onRequestMore}>more</More>}
+        {!isBegin && <Previous onClick={onRequestPrevious}>previous</Previous>}
+        {!isEnd && <More onClick={onRequestMore}>more</More>}
       </Wrapper>
     )
   }
@@ -40,3 +47,21 @@ export class Page extends Component {
     this.props.onRequestMore()
   }
 }
+
+function mapStateToProps (state) {
+  const { isBegin, isEnd } = getPaginationStatus(state)
+  return {
+    isBegin,
+    isEnd,
+    posts: state.posts
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    onRequestMore: postFeedActions.next,
+    onRequestPrevious: postFeedActions.prev
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Page)

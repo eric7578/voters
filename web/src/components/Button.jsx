@@ -24,3 +24,8 @@ export const More = styled(Button)`
   border-color: #333;
   color: #333;
 `
+
+export const Previous = styled(Button)`
+  border-color: #666;
+  color: #666;
+`
