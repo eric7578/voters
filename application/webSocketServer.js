@@ -86,12 +86,20 @@ function downvote (postId) {
   return downvoteOp.post
 }
 
+/*
+  Update current client's `from` and `to`.
+  And send an immediate updated posts to the client.
+*/
 function updateClientMonitorRange (client, range, posts) {
   client.from = range.from
   client.to = range.to
   sendPosts(client, posts)
 }
 
+/*
+  Broadcast to all the connected clients.
+  It will only send new posts to those client that their value `from` and `to` is within or over the updatedLocation.
+*/
 function broadcastEffectRanges (updateLocation, clients, posts) {
   for (let ws of clients.keys()) {
     const client = clients.get(ws)
