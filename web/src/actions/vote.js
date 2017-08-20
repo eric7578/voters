@@ -2,20 +2,24 @@ export const UPVOTE = 'vote/UPVOTE'
 
 export const DOWNVOTE = 'vote/DOWNVOTE'
 
-export function upvote ({ id }) {
+export function upvote (id, resolve, reject) {
   return {
     type: UPVOTE,
     payload: {
-      id
+      id,
+      resolve,
+      reject
     }
   }
 }
 
-export function downvote ({ id }) {
+export function downvote (id, resolve, reject) {
   return {
     type: DOWNVOTE,
     payload: {
-      id
+      id,
+      resolve,
+      reject
     }
   }
 }

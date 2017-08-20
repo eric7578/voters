@@ -30,8 +30,6 @@ export class Page extends Component {
       posts,
       onRequestMore,
       onRequestPrevious,
-      onUpvote,
-      onDownvote,
       isBegin,
       isEnd
     } = this.props
@@ -47,8 +45,8 @@ export class Page extends Component {
               <Post.Item
                 key={post.id}
                 data={post}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
+                onUpvote={this.onUpvote}
+                onDownvote={this.onDownvote}
               />
             )}
           </Post.List>
@@ -66,8 +64,17 @@ export class Page extends Component {
   // create a new post
   onSubmit = title => {
     this.props.onCreateTitle(title)
-      .then(() => alert('Done!'))
       .catch(err => alert(`Oooops!`))
+  }
+
+  onUpvote = data => {
+    this.props.onUpvote(data.id)
+      .catch(err => alert('Operation failed!'))
+  }
+
+  onDownvote = data => {
+    this.props.onDownvote(data.id)
+      .catch(err => alert('Operation failed!'))
   }
 }
 
@@ -84,14 +91,22 @@ function mapDispatchToProps (dispatch) {
   return {
     ...bindActionCreators({
       onCreateTitle: postActions.create,
-      onUpvote: voteActions.upvote,
-      onDownvote: voteActions.downvote,
       onRequestMore: postFeedActions.next,
       onRequestPrevious: postFeedActions.prev
     }, dispatch),
     onCreateTitle (title) {
       return new Promise((resolve, reject) => {
         dispatch(postActions.create(title, resolve, reject))
+      })
+    },
+    onUpvote (id) {
+      return new Promise((resolve, reject) => {
+        dispatch(voteActions.upvote(id, resolve, reject))
+      })
+    },
+    onDownvote (id) {
+      return new Promise((resolve, reject) => {
+        dispatch(voteActions.downvote(id, resolve, reject))
       })
     }
   }
