@@ -15,9 +15,9 @@ test('it should not render posts is props.posts is empty', t => {
 
 test('it should render posts if provided', t => {
   const posts = [
-    { id: 1, title: 'a post' },
-    { id: 2, title: 'another post' },
-    { id: 3, title: 'yet another post' }
+    { id: '1', title: 'a post' },
+    { id: '2', title: 'another post' },
+    { id: '3', title: 'yet another post' }
   ]
   const page = shallow(<Page posts={posts} />)
 
