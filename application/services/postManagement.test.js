@@ -11,47 +11,71 @@ test('#createPost should init numUpvote/numDownvote as 0, and generate id', t =>
   t.is(post.numDownvote, 0)
 })
 
-test('#insertPost should insert the post according to the numUpvote decedent', t => {
+test('#findInsertPosition should insert the post according to the numUpvote decedent', t => {
   const posts = [
-    { numUpvote: 50 },
-    { numUpvote: 40 },
-    { numUpvote: 30 },
-    { numUpvote: 20 },
-    { numUpvote: 10 }
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
   ]
-  const post = { numUpvote: 30 }
+  const post = { id: 6, numUpvote: 30 }
 
-  const index = postManagement.findInsertPosition(post, posts)
+  const insert = postManagement.findInsertPosition(post, posts)
 
-  t.is(index, 2)
+  t.is(insert.index, 2)
+  t.deepEqual(insert.posts, [
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 6, numUpvote: 30 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
+  ])
 })
 
-test('#insertPost should insert the post with most numUpvote in front', t => {
+test('#findInsertPosition should insert the post with most numUpvote in front', t => {
   const posts = [
-    { numUpvote: 50 },
-    { numUpvote: 40 },
-    { numUpvote: 30 },
-    { numUpvote: 20 },
-    { numUpvote: 10 }
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
   ]
-  const post = { numUpvote: 60 }
+  const post = { id: 6, numUpvote: 60 }
 
-  const index = postManagement.findInsertPosition(post, posts)
+  const insert = postManagement.findInsertPosition(post, posts)
 
-  t.is(index, 0)
+  t.is(insert.index, 0)
+  t.deepEqual(insert.posts, [
+    { id: 6, numUpvote: 60 },
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
+  ])
 })
 
-test('#insertPost should insert the post with least numUpvote in front', t => {
+test('#findInsertPosition should insert the post with least numUpvote in front', t => {
   const posts = [
-    { numUpvote: 50 },
-    { numUpvote: 40 },
-    { numUpvote: 30 },
-    { numUpvote: 20 },
-    { numUpvote: 10 }
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
   ]
-  const post = { numUpvote: 5 }
+  const post = { id: 6, numUpvote: 5 }
 
-  const index = postManagement.findInsertPosition(post, posts)
+  const insert = postManagement.findInsertPosition(post, posts)
 
-  t.is(index, posts.length)
+  t.is(insert.index, posts.length)
+  t.deepEqual(insert.posts, [
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 },
+    { id: 6, numUpvote: 5 }
+  ])
 })

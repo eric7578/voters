@@ -12,16 +12,26 @@ function createPost (title) {
 function findInsertPosition (post, posts) {
   let start = 0
   let end = posts.length - 1
+  let index
   const { numUpvote } = post
 
-  // if the first post has the smaller/same numUpvote, place the new post it in front all posts
-  if (posts[start].numUpvote <= numUpvote) {
-    return start
+  if (posts.length === 0) {
+    index = 0
+  } else if (posts[start].numUpvote <= numUpvote) {
+    // if the first post has the smaller/same numUpvote, place the new post it in front all posts
+    index = start
   } else if (posts[end].numUpvote > numUpvote) {
     // if the last post has larger numUpvote, place the new post it in the end
-    return posts.length
+    index = posts.length
   } else {
-    return posts.findIndex(post => post.numUpvote === numUpvote)
+    index = posts.findIndex(post => post.numUpvote === numUpvote)
+  }
+
+  const newPosts = posts.slice()
+  newPosts.splice(index, 0, post)
+  return {
+    index,
+    posts: newPosts
   }
 }
 
