@@ -61,12 +61,36 @@ function updateClientMonitorRange (ws, range) {
 
 function createPost (title) {
   const post = postManagement.createPost(title)
-  const insert = postManagement.findInsertPosition(post, posts)
-  posts = insert.posts
+  posts = reorderPosts(post, posts)
+  return post
+}
+
+function reorderPosts (insertPost, prevPosts) {
+  // get updated index and posts
+  const { index, posts } = postManagement.findInsertPosition(insertPost, prevPosts)
 
   // send the broadcast later
-  process.nextTick(() => broadcastEffectRanges(insert.index, clients, posts))
-  return post
+  process.nextTick(() => broadcastEffectRanges(index, clients, posts))
+  return posts
+}
+
+function upvote (postId) {
+  // find and update the target post
+  const index = posts.findIndex(post => post.id === postId)
+  const [targetPost] = posts.splice(index, 1)
+  targetPost.numUpvote += 1
+
+  posts = reorderPosts(targetPost, posts)
+}
+
+function downvote (postId) {
+  // find and update the target post
+  const index = posts.findIndex(post => post.id === postId)
+  posts[index].numDownvote += 1
+
+  // send the broadcast later
+  // no need to reorder here since the order is base on numUpvote
+  process.nextTick(() => broadcastEffectRanges(index, clients, posts))
 }
 
 function broadcastEffectRanges (updateLocation, clients, posts) {
@@ -84,5 +108,7 @@ function broadcastEffectRanges (updateLocation, clients, posts) {
 module.exports = {
   broadcastEffectRanges,
   createPost,
+  upvote,
+  downvote,
   setup
 }
