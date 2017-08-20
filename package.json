@@ -1,14 +1,19 @@
 {
   "name": "voters",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "git@github.com:eric7578/voters.git",
   "author": "ericyan <eric7578@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "8.4.0"
+  },
   "scripts": {
     "pretest": "eslint .",
     "test": "ava",
-    "start": "NODE_ENV=development node server.js"
+    "dev": "NODE_ENV=development node server.js",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "heroku-postbuild": "yarn build",
+    "start": "NODE_ENV=production node server.js"
   },
   "ava": {
     "require": [
