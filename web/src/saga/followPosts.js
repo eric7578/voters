@@ -15,10 +15,11 @@ export default function * followPosts () {
   const actions = yield actionChannel([postFeedActions.NEXT, postFeedActions.PREV])
 
   while (true) {
-    // once got action, change range of posts
-    yield take(actions)
+    // send current range first
     const range = yield select(getPaginationRange)
     yield call(send, range)
+    // once got another action, change range of posts
+    yield take(actions)
   }
 }
 

@@ -21,15 +21,16 @@ test('#createPost should call callPostApi to create new post', t => {
   )
 
   const channel = () => {}
-  t.deepEqual(g.next(channel).value, take(channel))
-
-  t.deepEqual(g.next().value, select(getPaginationRange))
+  t.deepEqual(g.next(channel).value, select(getPaginationRange))
 
   const range = {
     from: 1,
     to: 3
   }
   t.deepEqual(g.next(range).value, call(websocketChannel.send, range))
+
+  t.deepEqual(g.next().value, take(channel))
+
   t.false(g.next().done)
 })
 
