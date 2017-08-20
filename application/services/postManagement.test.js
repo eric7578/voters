@@ -79,3 +79,26 @@ test('#findInsertPosition should insert the post with least numUpvote in front',
     { id: 6, numUpvote: 5 }
   ])
 })
+
+test('#findInsertPosition should', t => {
+  const posts = [
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
+  ]
+  const post = { id: 6, numUpvote: 35 }
+
+  const insert = postManagement.findInsertPosition(post, posts)
+
+  t.is(insert.index, 2)
+  t.deepEqual(insert.posts, [
+    { id: 1, numUpvote: 50 },
+    { id: 2, numUpvote: 40 },
+    { id: 6, numUpvote: 35 },
+    { id: 3, numUpvote: 30 },
+    { id: 4, numUpvote: 20 },
+    { id: 5, numUpvote: 10 }
+  ])
+})

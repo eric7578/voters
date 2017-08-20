@@ -24,7 +24,7 @@ function findInsertPosition (post, posts) {
     // if the last post has larger numUpvote, place the new post it in the end
     index = posts.length
   } else {
-    index = posts.findIndex(post => post.numUpvote === numUpvote)
+    index = posts.findIndex(post => post.numUpvote <= numUpvote)
   }
 
   const newPosts = posts.slice()
