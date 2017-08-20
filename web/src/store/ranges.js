@@ -13,6 +13,8 @@ export default function reducer (state = initState, action) {
       return next(state, action)
     case postFeedActions.PREV:
       return prev(state, action)
+    case postFeedActions.UPDATE:
+      return update(state, action)
     default:
       return state
   }
@@ -48,4 +50,11 @@ function prev (state, action) {
 
 function getPagination (from, to) {
   return to - from + 1
+}
+
+function update (state, action) {
+  return {
+    ...state,
+    total: action.payload.total
+  }
 }

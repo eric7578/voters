@@ -35,7 +35,11 @@ function createClient (ws, clients) {
     isReady: false,
     send (data) {
       const sendPosts = posts.slice(this.from, this.to + 1)
-      ws.send(JSON.stringify(sendPosts))
+      const total = posts.length
+      ws.send(JSON.stringify({
+        total,
+        posts: sendPosts
+      }))
     }
   })
 }
@@ -60,18 +64,15 @@ function updateClientMonitorRange (ws, range) {
 }
 
 function createPost (title) {
-  const post = postManagement.createPost(title)
-  posts = reorderPosts(post, posts)
-  return post
-}
+  const insertPost = postManagement.createPost(title)
 
-function reorderPosts (insertPost, prevPosts) {
   // get updated index and posts
-  const { index, posts } = postManagement.findInsertPosition(insertPost, prevPosts)
+  const insert = postManagement.findInsertPosition(insertPost, posts)
+  posts = insert.posts
 
   // send the broadcast later
-  process.nextTick(() => broadcastEffectRanges(index, clients, posts))
-  return posts
+  broadcastEffectRanges(insert.index, clients, posts)
+  return insertPost
 }
 
 function upvote (postId) {
@@ -80,7 +81,12 @@ function upvote (postId) {
   const [targetPost] = posts.splice(index, 1)
   targetPost.numUpvote += 1
 
-  posts = reorderPosts(targetPost, posts)
+  // get updated index and posts
+  const insert = postManagement.findInsertPosition(targetPost, posts)
+  posts = insert.posts
+
+  // send the broadcast later
+  broadcastEffectRanges(insert.index, clients, posts)
 }
 
 function downvote (postId) {
@@ -90,7 +96,7 @@ function downvote (postId) {
 
   // send the broadcast later
   // no need to reorder here since the order is base on numUpvote
-  process.nextTick(() => broadcastEffectRanges(index, clients, posts))
+  broadcastEffectRanges(index, clients, posts)
 }
 
 function broadcastEffectRanges (updateLocation, clients, posts) {

@@ -18,8 +18,8 @@ const Wrapper = styled.div`
 
 export class Page extends Component {
   static propTypes = {
-    isBegin: PropTypes.bool,
-    isEnd: PropTypes.bool,
+    hasPrevious: PropTypes.bool,
+    hasMore: PropTypes.bool,
     posts: PropTypes.array,
     onRequestMore: PropTypes.func,
     onRequestPrevious: PropTypes.func
@@ -30,8 +30,8 @@ export class Page extends Component {
       posts,
       onRequestMore,
       onRequestPrevious,
-      isBegin,
-      isEnd
+      hasPrevious,
+      hasMore
     } = this.props
     // ignore List/Item/More if no posts is provided
     const containPosts = posts && posts.length > 0
@@ -51,8 +51,8 @@ export class Page extends Component {
             )}
           </Post.List>
         }
-        {!isBegin && <Previous onClick={onRequestPrevious}>previous</Previous>}
-        {!isEnd && <More onClick={onRequestMore}>more</More>}
+        {hasPrevious && <Previous onClick={onRequestPrevious}>previous</Previous>}
+        {hasMore && <More onClick={onRequestMore}>more</More>}
       </Wrapper>
     )
   }
@@ -79,10 +79,10 @@ export class Page extends Component {
 }
 
 function mapStateToProps (state) {
-  const { isBegin, isEnd } = getPaginationStatus(state)
+  const { hasPrevious, hasMore } = getPaginationStatus(state)
   return {
-    isBegin,
-    isEnd,
+    hasPrevious,
+    hasMore,
     posts: state.posts
   }
 }

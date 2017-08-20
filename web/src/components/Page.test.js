@@ -33,34 +33,34 @@ test('it should request for posts of first page when mounted', t => {
   t.true(onRequestMore.calledOnce)
 })
 
-test('it should not render More if isEnd is true', t => {
-  const isEnd = true
-  const page = shallow(<Page isEnd={isEnd} />)
+test('it should not render More if isEnd is false', t => {
+  const hasMore = false
+  const page = shallow(<Page hasMore={hasMore} />)
 
   t.false(page.find(More).exists())
 })
 
-test('it should render More if isEnd is false and request for more posts when click on More', t => {
-  const isEnd = false
+test('it should render More if hasMore is true and request for more posts when click on More', t => {
+  const hasMore = true
   const onRequestMore = spy()
-  const page = shallow(<Page isEnd={isEnd} onRequestMore={onRequestMore} />)
+  const page = shallow(<Page hasMore={hasMore} onRequestMore={onRequestMore} />)
 
   page.find(More).simulate('click')
 
   t.true(onRequestMore.calledOnce)
 })
 
-test('it should not render Previous if isBegin is true', t => {
-  const isBegin = true
-  const page = shallow(<Page isBegin={isBegin} />)
+test('it should not render Previous if hasPrevious is false', t => {
+  const hasPrevious = false
+  const page = shallow(<Page hasPrevious={hasPrevious} />)
 
   t.false(page.find(Previous).exists())
 })
 
-test('it should render Previous if isBegin is false and request for previous posts when click on Previous', t => {
-  const isBegin = false
+test('it should render Previous if hasPrevious is true and request for previous posts when click on Previous', t => {
+  const hasPrevious = true
   const onRequestPrevious = spy()
-  const page = shallow(<Page isBegin={isBegin} onRequestPrevious={onRequestPrevious} />)
+  const page = shallow(<Page hasPrevious={hasPrevious} onRequestPrevious={onRequestPrevious} />)
 
   page.find(Previous).simulate('click')
 

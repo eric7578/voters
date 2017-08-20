@@ -1,66 +1,72 @@
 import test from 'ava'
 import getPaginationStatus from '../selectors/getPaginationStatus'
 
-test('it should set isBegin as true if fromTo is at the range of the beginning', t => {
+test('it should set hasMore as true, hasPrevious as false if fromTo is at the range of the beginning', t => {
   const state = {
     ranges: {
       fromTo: [1, 3],
       total: 12
-    }
+    },
+    posts: [1, 2, 3]
   }
   const status = getPaginationStatus(state)
 
-  t.true(status.isBegin)
+  t.false(status.hasPrevious)
+  t.true(status.hasMore)
 })
 
-test('it should set isBegin as false if fromTo is in the middle/end', t => {
-  const stateWithFromToInTheMiddle = {
+test('it should set hasMore/hasPrevious as true if fromTo is in the middle', t => {
+  const state = {
     ranges: {
       fromTo: [4, 6],
       total: 12
-    }
+    },
+    posts: [1, 2, 3]
   }
-  const stateWithFromToInTheEnd = {
-    ranges: {
-      fromTo: [10, 12],
-      total: 12
-    }
-  }
-  const statusWithFromToInTheMiddle = getPaginationStatus(stateWithFromToInTheMiddle)
-  const statusWithFromToInTheEnd = getPaginationStatus(stateWithFromToInTheEnd)
+  const status = getPaginationStatus(state)
 
-  t.false(statusWithFromToInTheMiddle.isBegin)
-  t.false(statusWithFromToInTheEnd.isBegin)
+  t.true(status.hasPrevious)
+  t.true(status.hasMore)
 })
 
-test('it should set isEnd as true if fromTo is in the end', t => {
+test('it should set hasMore as false is at the end', t => {
   const state = {
     ranges: {
       fromTo: [10, 12],
       total: 12
-    }
+    },
+    posts: [1, 2, 3]
   }
   const status = getPaginationStatus(state)
 
-  t.true(status.isEnd)
+  t.true(status.hasPrevious)
+  t.false(status.hasMore)
 })
 
-test('it should set isEnd as false if fromTo is in the middle/begining', t => {
-  const stateWithFromToInTheMiddle = {
+test('it should set hasMore/hasPrevious as false if there is no posts', t => {
+  const state = {
     ranges: {
-      fromTo: [4, 6],
-      total: 12
-    }
+      fromTo: [1, 20],
+      total: 30
+    },
+    posts: []
   }
-  const stateWithFromToInTheBegining = {
+  const status = getPaginationStatus(state)
+
+  t.false(status.hasPrevious)
+  t.false(status.hasMore)
+})
+
+test('it should set hasMore as false if current page is not filled', t => {
+  const state = {
     ranges: {
       fromTo: [1, 3],
-      total: 12
-    }
+      total: 1
+    },
+    posts: [1]
   }
-  const statusWithFromToInTheMiddle = getPaginationStatus(stateWithFromToInTheMiddle)
-  const statusWithFromToInTheBegining = getPaginationStatus(stateWithFromToInTheBegining)
+  const status = getPaginationStatus(state)
 
-  t.false(statusWithFromToInTheMiddle.isEnd)
-  t.false(statusWithFromToInTheBegining.isEnd)
+  t.false(status.hasPrevious)
+  t.false(status.hasMore)
 })
