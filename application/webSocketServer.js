@@ -34,8 +34,8 @@ function createClient (ws, clients) {
   clients.set(ws, {
     isReady: false,
     send (data) {
-      console.log('send', data)
-      ws.send(JSON.stringify(data))
+      const sendPosts = posts.slice(this.from, this.to + 1)
+      ws.send(JSON.stringify(sendPosts))
     }
   })
 }
@@ -55,6 +55,7 @@ function updateClientMonitorRange (ws, range) {
     client.from = from - 1
     client.to = to - 1
     clients.set(ws, client)
+    client.send()
   }
 }
 
@@ -70,14 +71,12 @@ function createPost (title) {
 
 function broadcastEffectRanges (updateLocation, clients, posts) {
   for (let ws of clients.keys()) {
-    const { from, to, send } = clients.get(ws)
+    const client = clients.get(ws)
     // update posts when updateLocation is over/within the user's watching range
-    const isWithin = updateLocation >= from && updateLocation <= to
-    const isOver = updateLocation < to
-    console.log('updateLocation', updateLocation, 'isWithin', isWithin, 'isOver', isOver, [from, to])
+    const isWithin = updateLocation >= client.from && updateLocation <= client.to
+    const isOver = updateLocation < client.to
     if (isWithin || isOver) {
-      const sendPosts = posts.slice(from, to + 1)
-      send(sendPosts)
+      client.send()
     }
   }
 }

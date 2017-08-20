@@ -19,9 +19,4 @@ test('#broadcastEffectRanges should broadcast to those clients with range inside
   t.true(clients.get('client_2_4').send.calledOnce)
   t.true(clients.get('client_3_5').send.calledOnce)
   t.true(clients.get('client_4_6').send.calledOnce)
-
-  t.true(clients.get('client_1_3').send.calledWithExactly([1, 2, 3]))
-  t.true(clients.get('client_2_4').send.calledWithExactly([2, 3, 4]))
-  t.true(clients.get('client_3_5').send.calledWithExactly([3, 4, 5]))
-  t.true(clients.get('client_4_6').send.calledWithExactly([4, 5, 6]))
 })
