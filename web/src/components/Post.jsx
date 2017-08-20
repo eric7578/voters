@@ -23,7 +23,7 @@ const Title = styled.h2`
 export class Item extends PureComponent {
   static propTypes = {
     data: PropTypes.shape({
-      id: PropTypes.number,
+      id: PropTypes.string,
       title: PropTypes.string,
       numUpvote: PropTypes.number,
       numDownvote: PropTypes.number

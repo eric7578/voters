@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import window from 'global/window'
 import sagaMiddleware, { rootSaga } from '../saga'
 import ranges from './ranges'
+import posts from './posts'
 
 let middleware = applyMiddleware(sagaMiddleware)
 
@@ -14,7 +15,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const reducers = combineReducers({
-  ranges
+  ranges,
+  posts
 })
 
 const store = createStore(reducers, middleware)

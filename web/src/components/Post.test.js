@@ -6,7 +6,7 @@ import { Item } from './Post.jsx'
 import { Upvote, Downvote } from './Button.jsx'
 
 test('it should call onUpvote when click upvote', t => {
-  const data = { id: 1, title: 'a post' }
+  const data = { id: '1', title: 'a post' }
   const onUpvote = spy()
   const item = shallow(<Item data={data} onUpvote={onUpvote} />)
 
@@ -17,7 +17,7 @@ test('it should call onUpvote when click upvote', t => {
 })
 
 test('it should call onDownvote when click downvote', t => {
-  const data = { id: 1, title: 'a post' }
+  const data = { id: '1', title: 'a post' }
   const onDownvote = spy()
   const item = shallow(<Item data={data} onDownvote={onDownvote} />)
 
