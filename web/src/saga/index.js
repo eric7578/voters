@@ -12,7 +12,7 @@ export function * rootSaga () {
   yield takeLatest(voteActions.UPVOTE, upvote)
   yield takeLatest(voteActions.DOWNVOTE, downvote)
 
-  // when take these actions, it will tell the backend to follow different posts
+  // init saga for handling websocket
   yield fork(followPosts)
 }
 

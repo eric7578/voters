@@ -1,9 +1,10 @@
 import * as postFeedActions from '../actions/postFeed'
 
 const initState = {
-  // in the beginning, get the first 20th posts
+  // this is the `range`, in the beginning, only get the first 20th posts
+  // it will change when getting the NEXT/PREV action
   fromTo: [1, 20],
-  // number of total will update when retceiving the posts
+  // number of total posts
   total: null
 }
 

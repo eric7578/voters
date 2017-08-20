@@ -4,6 +4,11 @@ import { WebSocket, window } from 'global'
 import * as postFeedActions from '../actions/postFeed'
 import getPaginationRange from '../selectors/getPaginationRange'
 
+/*
+  This saga will first create a websocket channel, and wait until it connected
+  Then, it will fork a saga to watch new incoming update messages
+  Then, it will listen to NEXT/PREV actions, select pagination range, and then send the updated range back to the server.
+*/
 export default function * followPosts () {
   // wait until socket open
   const { channel, send } = yield call(openWebSocketChannel)
@@ -31,7 +36,7 @@ export function * watchingIncomingMessage (wsChannel) {
   }
 }
 
-// Since this function has webscoket constructor inside, this part is hard to test
+// This function create a websocket channel and returned after it connected to the server
 export function * openWebSocketChannel () {
   const ws = new WebSocket(getWebSocketServerUrl(window.location))
 
@@ -90,6 +95,7 @@ export function * openWebSocketChannel () {
   }
 }
 
+// This function create websocket url by current protocol
 export function getWebSocketServerUrl (location) {
   const { protocol, host } = location
   const wsProtocol = protocol === 'https:'
