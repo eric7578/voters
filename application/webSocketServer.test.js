@@ -1,6 +1,6 @@
 const test = require('ava')
 const { spy } = require('sinon')
-const { broadcastEffectRanges } = require('./webSocketServer')
+const { broadcastEffectRanges, sendPosts, updateClientMonitorRange } = require('./webSocketServer')
 
 test('#broadcastEffectRanges should broadcast to those clients with range inside/behind the location', t => {
   const effectLocation = 3
@@ -19,4 +19,44 @@ test('#broadcastEffectRanges should broadcast to those clients with range inside
   t.true(clients.get('client_2_4').send.calledOnce)
   t.true(clients.get('client_3_5').send.calledOnce)
   t.true(clients.get('client_4_6').send.calledOnce)
+})
+
+test('#sendPosts should slice part of posts and send it', t => {
+  const client = {
+    from: 3,
+    to: 5,
+    send: spy()
+  }
+  const posts = [0, 1, 2, 3, 4, 5, 6]
+
+  sendPosts(client, posts)
+
+  t.true(client.send.calledOnce)
+  t.true(client.send.calledWithExactly({
+    total: 7,
+    posts: [3, 4, 5]
+  }))
+})
+
+test(`#updateClientMonitorRange should update client's range, and send with new range`, t => {
+  const client = {
+    from: 0,
+    to: 2,
+    send: spy()
+  }
+  const newRange = {
+    from: 3,
+    to: 5
+  }
+  const posts = [0, 1, 2, 3, 4, 5, 6]
+
+  updateClientMonitorRange(client, newRange, posts)
+
+  t.is(client.from, newRange.from)
+  t.is(client.to, newRange.to)
+  t.true(client.send.calledOnce)
+  t.true(client.send.calledWithExactly({
+    total: 7,
+    posts: [3, 4, 5]
+  }))
 })

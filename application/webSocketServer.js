@@ -1,20 +1,12 @@
 const WebSocket = require('ws')
-const postManagement = require('./services/postManagement')
-
-// in memory storage
-// all the posts
-let posts = []
-
-// object that map id with the current index
-// const mapPostIdToIndex = {}
+const postFeed = require('./services/postFeed')
+const storage = require('./services/storage')
 
 // all the websocket clients
-let clients = new Map()
-
-let wss
+const clients = new Map()
 
 function setup (server) {
-  wss = new WebSocket.Server({ server })
+  const wss = new WebSocket.Server({ server })
   wss.on('connection', ws => {
     // create a new client when connect
     createClient(ws, clients)
@@ -22,7 +14,20 @@ function setup (server) {
     // update client's watching range
     ws.on('message', range => {
       range = JSON.parse(range)
-      updateClientMonitorRange(ws, range)
+
+      // range from browser is post's serial number
+      range.from -= 1
+      range.to -= 1
+
+      // prevent invalid range settings
+      if (range.to < range.from) {
+        let tmp = range.from
+        range.from = range.to
+        range.to = tmp
+      }
+
+      const client = clients.get(ws)
+      updateClientMonitorRange(client, range, storage.get())
     })
 
     // remove client
@@ -32,71 +37,59 @@ function setup (server) {
 
 function createClient (ws, clients) {
   clients.set(ws, {
-    isReady: false,
+    from: null,
+    to: null,
     send (data) {
-      const sendPosts = posts.slice(this.from, this.to + 1)
-      const total = posts.length
-      ws.send(JSON.stringify({
-        total,
-        posts: sendPosts
-      }))
+      ws.send(JSON.stringify(data))
     }
   })
 }
 
 function closeClient (ws, clients) {
+  ws.removeAllListeners()
   clients.delete(ws)
 }
 
-function updateClientMonitorRange (ws, range) {
-  const client = clients.get(ws)
-  if (client) {
-    // prevent invalid range settings
-    const from = Math.min(range.from, range.to)
-    const to = Math.max(range.from, range.to)
-
-    client.isReady = true
-    client.from = from - 1
-    client.to = to - 1
-    clients.set(ws, client)
-    client.send()
-  }
-}
-
 function createPost (title) {
-  const insertPost = postManagement.createPost(title)
+  // do create
+  const insertOp = postFeed.insert(title, storage.get())
 
-  // get updated index and posts
-  const insert = postManagement.findInsertPosition(insertPost, posts)
-  posts = insert.posts
+  // update current storage
+  storage.set(insertOp.storage)
 
-  // send the broadcast later
-  broadcastEffectRanges(insert.index, clients, posts)
-  return insertPost
+  // send the broadcast to all sockets
+  broadcastEffectRanges(insertOp.index, clients, insertOp.storage)
+  return insertOp.post
 }
 
 function upvote (postId) {
-  // find and update the target post
-  const index = posts.findIndex(post => post.id === postId)
-  const [targetPost] = posts.splice(index, 1)
-  targetPost.numUpvote += 1
+  // do upvote
+  const upvoteOp = postFeed.upvote(postId, storage.get())
 
-  // get updated index and posts
-  const insert = postManagement.findInsertPosition(targetPost, posts)
-  posts = insert.posts
+  // update current storage
+  storage.set(upvoteOp.storage)
 
-  // send the broadcast later
-  broadcastEffectRanges(insert.index, clients, posts)
+  // send the broadcast to all sockets
+  broadcastEffectRanges(upvoteOp.index, clients, upvoteOp.storage)
+  return upvoteOp.post
 }
 
 function downvote (postId) {
-  // find and update the target post
-  const index = posts.findIndex(post => post.id === postId)
-  posts[index].numDownvote += 1
+  // do downvote
+  const downvoteOp = postFeed.downvote(postId, storage.get())
 
-  // send the broadcast later
-  // no need to reorder here since the order is base on numUpvote
-  broadcastEffectRanges(index, clients, posts)
+  // update current storage
+  storage.set(downvoteOp.storage)
+
+  // send the broadcast to all sockets
+  broadcastEffectRanges(downvoteOp.index, clients, downvoteOp.storage)
+  return downvoteOp.post
+}
+
+function updateClientMonitorRange (client, range, posts) {
+  client.from = range.from
+  client.to = range.to
+  sendPosts(client, posts)
 }
 
 function broadcastEffectRanges (updateLocation, clients, posts) {
@@ -106,13 +99,22 @@ function broadcastEffectRanges (updateLocation, clients, posts) {
     const isWithin = updateLocation >= client.from && updateLocation <= client.to
     const isOver = updateLocation < client.to
     if (isWithin || isOver) {
-      client.send()
+      sendPosts(client, posts)
     }
   }
 }
 
+function sendPosts (client, posts) {
+  client.send({
+    total: posts.length,
+    posts: posts.slice(client.from, client.to + 1)
+  })
+}
+
 module.exports = {
   broadcastEffectRanges,
+  updateClientMonitorRange,
+  sendPosts,
   createPost,
   upvote,
   downvote,
