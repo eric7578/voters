@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const createPost = require('./createPost')
+const { createPost } = require('./webSocketServer')
 
 const api = Router()
 
