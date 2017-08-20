@@ -5,12 +5,16 @@ import { Upvote, Downvote } from './Button'
 
 export const List = styled.ol`
   margin: 0;
+  padding: 0;
 `
 
 const ListWrapper = styled.li`
+  align-items: flex-end;
+  border-bottom: 1px solid #999;
   display: flex;
   justify-content: space-between;
   list-style-type: none;
+  padding: 10px;
 `
 
 const Title = styled.h2`

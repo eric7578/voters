@@ -2,7 +2,7 @@ import * as postFeedActions from '../actions/postFeed'
 
 const initState = {
   // in the beginning, get the first 20th posts
-  fromTo: [1, 3],
+  fromTo: [1, 20],
   // number of total will update when retceiving the posts
   total: null
 }

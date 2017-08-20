@@ -29,3 +29,8 @@ export const Previous = styled(Button)`
   border-color: #666;
   color: #666;
 `
+
+export const Submit = styled(Button)`
+  border-color: #b7b7b7;
+  color: #b7b7b7;
+`

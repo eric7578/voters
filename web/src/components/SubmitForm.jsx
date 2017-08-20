@@ -1,19 +1,23 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { Submit } from './Button'
 
 const FormContent = styled.div`
   align-items: flex-start;
   display: flex;
+  padding: 20px 10px;
 `
 
 const Input = styled.textarea`
+  border: 1px solid #b7b7b7;
+  flex: 1;
+  outline: none;
+  padding: 12px;
   width: 300px;
 `
 
-const SubmitButton = styled.input.attrs({
-  type: 'submit'
-})`
+const SubmitButton = styled(Submit)`
   margin-left: 5px;
 `
 
@@ -45,7 +49,7 @@ export default class SubmitForm extends PureComponent {
             value={this.state.content}
             onChange={this.onChange}
           />
-          <SubmitButton value='Send' />
+          <SubmitButton>submit</SubmitButton>
         </FormContent>
       </form>
     )

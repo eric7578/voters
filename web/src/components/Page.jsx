@@ -16,6 +16,11 @@ const Wrapper = styled.div`
   width: 1000px;
 `
 
+const Footer = styled.div`
+  padding: 30px;
+  text-align: center;
+`
+
 export class Page extends Component {
   static propTypes = {
     hasPrevious: PropTypes.bool,
@@ -41,7 +46,7 @@ export class Page extends Component {
         <SubmitForm onSubmit={this.onSubmit} />
         {containPosts &&
           <Post.List>
-            {posts.map(post =>
+            {posts.map((post, index) =>
               <Post.Item
                 key={post.id}
                 data={post}
@@ -51,8 +56,10 @@ export class Page extends Component {
             )}
           </Post.List>
         }
-        {hasPrevious && <Previous onClick={onRequestPrevious}>previous</Previous>}
-        {hasMore && <More onClick={onRequestMore}>more</More>}
+        <Footer>
+          {hasPrevious && <Previous onClick={onRequestPrevious}>previous</Previous>}
+          {hasMore && <More onClick={onRequestMore}>more</More>}
+        </Footer>
       </Wrapper>
     )
   }
